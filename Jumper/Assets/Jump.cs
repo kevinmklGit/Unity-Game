@@ -3,34 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Jump : MonoBehaviour {
+    Rigidbody rb;
+    public int JumpHeight = 0;
+    public int BallSpeed = 0;
+    public bool inAir = false;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		        NextCube ();
+    void Start() {
+        rb = GetComponent<Rigidbody>();
 
-            }
+    }
 
-            GameObject NextCube() {
+    // Update is called once per frame
+    void Update()
+    {
 
-                GameObject[] gos;
-                gos = GameObject.FindGameObjectsWithTag("cube");
-                GameObject closest = null;
-                float distance = Math.Infinity;
-                Vector3 position = transform.position;
-                foreach (GameObject go in gos) {
-                    Vector3 diff = go.transform.position - position;
+        if ((Input.GetKey(KeyCode.Space)) && !inAir)
+        {
+            rb.AddForce(transform.up * JumpHeight);
+        }
+    }
 
-                    float curDistance = diff.sqrMagnitude;
-                    if (curDistance < distance) {
-                        closest = go;
-                        distance = curDistance;
-                    }
-                }
-                return closest;
-	}
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Platform")
+            inAir = false;
+    }
+
+    void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.tag == "Platform")
+            inAir = true;
+    }
+
 }
+   
